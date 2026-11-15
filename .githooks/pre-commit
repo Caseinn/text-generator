@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -e
+
+if command -v bun >/dev/null 2>&1; then
+  runner="bun run"
+elif command -v npm >/dev/null 2>&1; then
+  runner="npm run"
+else
+  echo "pre-commit: neither bun nor npm found in PATH" >&2
+  exit 1
+fi
+
+echo "pre-commit: running lint"
+$runner lint
