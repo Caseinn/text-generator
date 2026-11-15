@@ -2,12 +2,68 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>text-generator</title>
+    <title>Text Image: Text Card Generator</title>
+    <meta
+      name="description"
+      content="Type or paste text and get a black-on-white card in Arial Narrow, with justified lines sized to fit the frame. Export at 1:1 or 3:4."
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="color-scheme" content="light" />
+    <meta name="robots" content="index, follow" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Text Image" />
+    <meta property="og:title" content="Text Image: Text Card Generator" />
+    <meta
+      property="og:description"
+      content="Type or paste text and get a black-on-white card in Arial Narrow, with justified lines sized to fit the frame. Export at 1:1 or 3:4."
+    />
+    <meta property="og:image" content="/og.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="A square text card reading: atur aja, bang, abang kan panitia."
+    />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Text Image: Text Card Generator" />
+    <meta
+      name="twitter:description"
+      content="Black-on-white text cards in Arial Narrow, with justified lines sized to fit the frame. Export at 1:1 or 3:4."
+    />
+    <meta name="twitter:image" content="/og.png" />
+    <meta
+      name="twitter:image:alt"
+      content="A square text card reading: atur aja, bang, abang kan panitia."
+    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Text Image",
+        "applicationCategory": "DesignApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript",
+        "description": "Type or paste text to make a black-on-white card in Arial Narrow, with justified lines sized to fit the frame.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>Text Image needs JavaScript to draw the card and export a PNG.</noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
