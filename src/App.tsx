@@ -5,6 +5,7 @@ import type { TextImageSettings } from '@/types'
 
 import { CardStage } from '@/components/generator/card-stage'
 import { ExportActions, Inspector } from '@/components/generator/inspector'
+import { SocialLinks } from '@/components/generator/social-links'
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet'
 import { Toaster } from '@/components/ui/sonner'
 import { useCardExport } from '@/hooks/use-card-export'
@@ -100,6 +101,7 @@ export default function App() {
           <span className="hidden text-[11px] text-muted-foreground md:inline">
             Nothing leaves your browser
           </span>
+          <SocialLinks />
           <span className="rounded border border-border px-1.5 py-0.5 text-[10px] font-medium tracking-[0.08em] text-muted-foreground uppercase">
             PNG
           </span>
