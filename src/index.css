@@ -11,31 +11,43 @@
 @import '@fontsource/arimo/400.css';
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant xs (@media (min-width: 26rem));
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --radius: 0.625rem;
+  --paper: #f5f4ef;
+  --stage: #e7e4da;
+  --surface: #ffffff;
+  --ink: #16171a;
+  --ink-hover: #2b2c30;
+  --ink-muted: #5d6066;
+  --line: #e3dfd5;
+  --line-strong: #cbc5b7;
+  --signal: #9e3b2b;
+  --signal-soft: #f7ebe6;
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--surface);
+  --card-foreground: var(--ink);
+  --popover: var(--surface);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: #fbfaf7;
+  --secondary: #edebe3;
+  --secondary-foreground: var(--ink);
+  --muted: #efedE5;
+  --muted-foreground: var(--ink-muted);
+  --accent: #eae7dd;
+  --accent-foreground: var(--ink);
+  --destructive: var(--signal);
+  --border: var(--line);
+  --input: var(--line-strong);
+  --ring: var(--signal);
+  --radius: 0.5rem;
 }
 
 @theme inline {
-  --font-sans: 'Geist Variable', sans-serif;
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -54,6 +66,15 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-stage: var(--stage);
+  --color-signal: var(--signal);
+  --color-signal-soft: var(--signal-soft);
+  --color-ink: var(--ink);
+  --color-line-strong: var(--line-strong);
+  --shadow-plate:
+    0 1px 1px rgb(22 23 26 / 0.06), 0 2px 4px rgb(22 23 26 / 0.04),
+    0 22px 40px -24px rgb(22 23 26 / 0.45);
+  --shadow-tray: 0 -12px 24px -20px rgb(22 23 26 / 0.5);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -69,11 +90,42 @@
   }
 
   html {
-    @apply font-sans;
+    @apply bg-background font-sans;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
+    caret-color: var(--ink);
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--signal) 18%, transparent);
+    color: var(--ink);
+  }
+
+  * {
+    scrollbar-color: var(--line-strong) transparent;
+    scrollbar-width: thin;
+  }
+
+  ::-webkit-scrollbar {
+    height: 10px;
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--line-strong);
+    border: 3px solid var(--background);
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #b6b0a0;
   }
 }
 
@@ -81,22 +133,151 @@ button:not(:disabled),
 [role='button']:not([aria-disabled='true']),
 a[href],
 label[for],
-[role='option']:not([data-disabled]) {
+[role='option']:not([data-disabled]),
+label:has(> input[type='checkbox']),
+label:has(> input[type='radio']),
+select:not(:disabled),
+summary,
+input[type='checkbox']:not(:disabled),
+input[type='radio']:not(:disabled) {
   cursor: pointer;
 }
 
 button:disabled,
+select:disabled,
 [aria-disabled='true'],
-[data-disabled] {
+[data-disabled],
+input:disabled {
   cursor: not-allowed;
-  pointer-events: auto;
+  pointer-events: auto !important;
 }
 
-[aria-busy='true'],
-[data-busy] {
+html [aria-busy='true'],
+html [data-busy] {
   cursor: progress;
 }
 
 [data-dragging='true'] {
   cursor: copy;
+}
+
+.range-input {
+  --fill: 0%;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+
+.range-input:disabled {
+  cursor: not-allowed;
+}
+
+.range-input::-webkit-slider-runnable-track {
+  background: linear-gradient(
+    to right,
+    var(--ink) 0 var(--fill),
+    var(--line-strong) var(--fill) 100%
+  );
+  border-radius: 999px;
+  height: 3px;
+}
+
+.range-input::-moz-range-track {
+  background: var(--line-strong);
+  border-radius: 999px;
+  height: 3px;
+}
+
+.range-input::-moz-range-progress {
+  background: var(--ink);
+  border-radius: 999px;
+  height: 3px;
+}
+
+.range-input::-webkit-slider-thumb {
+  appearance: none;
+  background: var(--surface);
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  height: 15px;
+  margin-top: -6px;
+  transition:
+    box-shadow 150ms ease-out,
+    transform 150ms ease-out;
+  width: 15px;
+}
+
+.range-input::-moz-range-thumb {
+  background: var(--surface);
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  height: 15px;
+  transition:
+    box-shadow 150ms ease-out,
+    transform 150ms ease-out;
+  width: 15px;
+}
+
+.range-input:hover::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--ink) 8%, transparent);
+}
+
+.range-input:hover::-moz-range-thumb {
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--ink) 8%, transparent);
+}
+
+.range-input:active::-webkit-slider-thumb {
+  transform: scale(0.94);
+}
+
+.range-input:focus-visible {
+  outline: none;
+}
+
+.range-input:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--ring) 32%, transparent);
+}
+
+.range-input:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--ring) 32%, transparent);
+}
+
+@media (pointer: coarse) {
+  .range-input::-webkit-slider-thumb {
+    height: 18px;
+    margin-top: -7.5px;
+    width: 18px;
+  }
+
+  .range-input::-moz-range-thumb {
+    height: 18px;
+    width: 18px;
+  }
+}
+
+.stage-plate {
+  min-height: 11rem;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.stage-card {
+  max-height: 100%;
+  max-width: 100%;
+}
+
+@media (min-width: 640px) {
+  .stage-plate {
+    min-height: 15rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
