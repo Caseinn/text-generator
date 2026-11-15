@@ -1,75 +1,74 @@
-# React + TypeScript + Vite
+# Text Image
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Turn a few lines of text into a black-on-white card and download it as a PNG.
+Arial Narrow is the default face, the lines justify to the frame, and auto size
+picks the largest type that fits. Export it square or 3:4, at full size or
+low-res.
 
-Currently, two official plugins are available:
+## Examples
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+| Standard (1080 px) | Low res (240 px) |
+| --- | --- |
+| <img src="public/examples/card-1080.png" width="320" alt="A text card reading atur aja bang, abang kan panitia" /> | <img src="public/examples/card-240.png" width="320" alt="The same card at 240 px wide" /> |
 
-## React Compiler
+Both images come from the app's export path. The low-res file is a 240 px
+bitmap; viewers scale it up and the type softens.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## What You Get
 
-## Expanding the ESLint configuration
+The preview uses the same layout and drawing code as the downloaded file, so
+the type size and line breaks you see are the ones in the PNG.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+The cards use the Arial Narrow look of the reference images. Arial Narrow is
+used when the system has it, Archivo Narrow is bundled as the fallback, and six
+more families are included: Arimo (Arial at normal width), Space Grotesk, DM
+Sans, Anton, JetBrains Mono, and Instrument Serif.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Your text stays in the browser. Nothing is uploaded, and the PNG is generated
+on the page. Files carry a timestamp, so repeated downloads do not overwrite
+each other.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Controls
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Type or paste the text, then pick a face and an alignment. Auto size is on by
+default; turn it off to set the type size yourself. Line height, horizontal
+padding, and vertical padding each have a slider. You can force uppercase,
+invert to white on black, switch between 1:1 and 3:4, and turn on low-res.
 
-```
+Copy image puts the PNG on the clipboard where the browser supports it.
+Download PNG saves the file.
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+## Export Sizes
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Shape | Standard | Low res |
+| --- | --- | --- |
+| 1:1 | 1080 × 1080 | 240 × 240 |
+| 3:4 | 1080 × 1440 | 240 × 320 |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## How It Works
 
-```
+- `src/lib/text-layout.ts` wraps the text in a 1000-unit-wide frame. The frame
+  height follows the shape. With auto size on, it binary-searches the largest
+  font size that fits the width and height, then justifies every line except
+  the last of each paragraph.
+- `src/lib/render-text-image.ts` draws that layout with Canvas 2D. Ink and
+  paper are fixed colors, so the exported file does not follow the app theme.
+- `src/hooks/use-preview-canvas.ts` keeps the preview canvas at device
+  resolution. In low-res mode it draws the 240 px bitmap and lets the browser
+  scale it up.
+- `src/lib/export-image.ts` encodes the same layout to PNG and hands it to the
+  download or clipboard path.
+
+Stack: React 19, Vite 8, TypeScript 6, Tailwind CSS 4, shadcn/ui on Radix, and
+Phosphor icons.
+
+## Commands
+
+- `bun run dev` starts the Vite dev server.
+- `bun run build` type-checks with `tsc -b` and builds for production.
+- `bun run lint` runs ESLint; add `--fix` to autofix.
+- `bun run preview` serves the built output.
+- `bunx --bun shadcn@latest add <component>` adds a UI primitive to
+  `src/components/ui`.
+
+See `AGENTS.md` for the project conventions.
