@@ -1,123 +1,66 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import type { TextImageSettings } from '@/types'
 
-function App() {
-  const [count, setCount] = useState(0)
+import { ControlPanel } from '@/components/generator/control-panel'
+import { PreviewCanvas } from '@/components/generator/preview-canvas'
+import { Toaster } from '@/components/ui/sonner'
+import { useFontReady } from '@/hooks/use-font-ready'
+import { getFont } from '@/lib/fonts'
+import { layoutText } from '@/lib/text-layout'
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img alt="" className="base" height="179" src={heroImg} width="170" />
-          <img alt="React logo" className="framework" src={reactLogo} />
-          <img alt="Vite logo" className="vite" src={viteLogo} />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-          type="button"
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg aria-hidden="true" className="icon" role="presentation">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img alt="" className="logo" src={viteLogo} />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img alt="" className="button-icon" src={reactLogo} />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg aria-hidden="true" className="icon" role="presentation">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  aria-hidden="true"
-                  className="button-icon"
-                  role="presentation"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  aria-hidden="true"
-                  className="button-icon"
-                  role="presentation"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  aria-hidden="true"
-                  className="button-icon"
-                  role="presentation"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  aria-hidden="true"
-                  className="button-icon"
-                  role="presentation"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+const INITIAL_SETTINGS: TextImageSettings = {
+  align: 'justify',
+  autoSize: true,
+  font: 'arial-narrow',
+  fontSize: 96,
+  format: '1:1',
+  invert: false,
+  lineHeight: 1,
+  lowRes: false,
+  paddingX: 1,
+  paddingY: 3,
+  text: 'atur aja bang, abang kan panitia',
+  uppercase: false,
 }
 
-export default App
+/** Single-page studio: the card preview next to its settings. */
+export default function App() {
+  const [settings, setSettings] = useState(INITIAL_SETTINGS)
+  const font = getFont(settings.font)
+  const fontReady = useFontReady(font)
+  const layout = layoutText(settings)
+
+  const update = useCallback((patch: Partial<TextImageSettings>) => {
+    setSettings((current) => ({ ...current, ...patch }))
+  }, [])
+
+  return (
+    <div className="min-h-svh bg-muted/30">
+      <header className="border-b bg-background">
+        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4 lg:px-8">
+          <div className="flex items-baseline gap-3">
+            <h1 className="text-sm font-semibold tracking-tight">Text Image</h1>
+            <span className="hidden font-mono text-[11px] tracking-[0.18em] text-muted-foreground uppercase sm:inline">
+              text card generator
+            </span>
+          </div>
+          <span className="font-mono text-[11px] text-muted-foreground">
+            PNG
+          </span>
+        </div>
+      </header>
+
+      <main className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start lg:gap-12 lg:px-8">
+        <PreviewCanvas
+          layout={layout}
+          ready={fontReady}
+          settings={settings}
+        />
+        <ControlPanel layout={layout} onChange={update} settings={settings} />
+      </main>
+
+      <Toaster position="bottom-center" theme="light" />
+    </div>
+  )
+}
